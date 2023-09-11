@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -56,17 +58,14 @@ public class UserService {
             );
 
             User foundUser = userRepository.findByUsername(user.getUsername());
-            if (foundUser == null) {
-                throw new PasswordException("Incorrect credentials");
-            }
-            if (!checkPassword(user.getPassword(), foundUser.getPassword())) {
-                throw new PasswordException("Incorrect credentials");
-            }
             String jwtToken = jwtService.generateToken(foundUser);
 
             return new LoginResponseDto(foundUser.getUsername(), Role.USER, jwtToken);
         } catch (Exception e) {
             logger.warning("Error logging in user: " + e);
+            if (e instanceof BadCredentialsException || e instanceof InternalAuthenticationServiceException) {
+                throw new PasswordException("Incorrect credentials");
+            }
             throw new Exception(e.getMessage());
         }
     }
