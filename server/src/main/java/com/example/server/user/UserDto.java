@@ -1,17 +1,15 @@
 package com.example.server.user;
 
-import lombok.Getter;
+import lombok.*;
+import org.springframework.lang.NonNull;
 
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
+    @NonNull
     private String username;
+    @NonNull
     private String password;
-
-    public UserDto() {
-    }
-
-    public UserDto(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
 }

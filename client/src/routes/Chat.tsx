@@ -2,7 +2,7 @@ import "../styles/App.css";
 import "../styles/normal.css";
 import { useState, useEffect } from "react";
 import { ChatMessage } from "../components";
-import { fetchChatList, createChat, deleteChat, postChatMessage } from "../services/chatApi";
+import { fetchChatList, createChat, deleteChat, postChatMessage } from "../services";
 import { ChatDb, ChatLog } from "../interfaces";
 
 const Chat = () => {

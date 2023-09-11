@@ -1,16 +1,13 @@
-import '../styles/Login.css';
+import '../styles/Register.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services';
+import { register } from '../services';
 
-
-const Login = () => {
+function Register() {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
     });
-
-    const [errorMessage, setErrorMessage] = useState(''); // State for error message
 
     const navigator = useNavigate();
 
@@ -22,25 +19,19 @@ const Login = () => {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        const response = await login(formData.username, formData.password);
+        const response = await register(formData.username, formData.password);
 
-        if (response?.status === 200) {
-            const body = await response.json();
-            localStorage.setItem('token', body.token);
-            navigator('/chat');
+        if (response) {
+            navigator('/login');
         } else {
-            const errorBody = await response?.json();
-            setErrorMessage(errorBody.message);
+            console.error('Registration failed');
         }
     };
 
     return (
-        <div className="login-container">
-            <h2>Login</h2>
+        <div className="register-container">
+            <h2>Register</h2>
             <form onSubmit={handleSubmit}>
-                {/* Error message */}
-                {errorMessage && <div className="error-message">{errorMessage}</div>}
-
                 <div className="form-group">
                     <label htmlFor="username">Username</label>
                     <input
@@ -63,14 +54,13 @@ const Login = () => {
                         required
                     />
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit">Register</button>
             </form>
             <p className="register-message">
-                Don't have an account? <a href="/register">Create one</a>.
+                Already have an account? <a href="/login">Login here</a>.
             </p>
         </div>
     );
-};
+}
 
-export default Login;
-
+export default Register;

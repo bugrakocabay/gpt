@@ -2,8 +2,10 @@ package com.example.server.user;
 
 import com.example.server.chat.Chat;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +19,13 @@ import java.util.List;
 @AllArgsConstructor
 @Document(collection = "user")
 public class User implements UserDetails {
+    @Id
     private String id;
 
     @Indexed(unique = true)
+    @NonNull
     private String username;
+    @NonNull
     private String password;
 
     private Role role;
