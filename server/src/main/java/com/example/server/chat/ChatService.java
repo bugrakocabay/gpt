@@ -1,5 +1,7 @@
 package com.example.server.chat;
 
+import com.example.server.user.User;
+import com.example.server.user.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
@@ -22,6 +25,8 @@ public class ChatService {
 
     @Autowired
     private ChatRepository chatRepository;
+    @Autowired
+    private UserRepository userRepository;
     private final Environment environment;
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Logger logger = Logger.getLogger(ChatService.class.getName());
@@ -35,6 +40,15 @@ public class ChatService {
         logger.info("Saving chat with id: " + chatDto.getId());
         Chat chat = new Chat();
         chat.setConversationId(chatDto.getId());
+        User user = userRepository.findById(chatDto.getUserId()).get();
+        String[] userChats = user.getChats();
+        if (userChats == null) {
+            userChats = new String[0];
+        }
+        String[] updatedChats = Arrays.copyOf(userChats, userChats.length + 1);
+        updatedChats[userChats.length] = chatDto.getId();
+        user.setChats(updatedChats);
+        userRepository.save(user);
         return chatRepository.save(chat);
     }
 

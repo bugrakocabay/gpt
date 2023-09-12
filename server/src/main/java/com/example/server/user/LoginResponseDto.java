@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginResponseDto {
 
+    private String id;
     private String username;
     private Role role;
     private String token;

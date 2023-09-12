@@ -1,11 +1,16 @@
-import {Chat, Login, Register} from "./routes"
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Chat, Login, Register } from "./routes"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+const isAuthenticated = () => {
+    const token = localStorage.getItem('token');
+    return !!token;
+};
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/chat" Component={Chat} />
+                <Route path="/chat" element={isAuthenticated() ? <Chat /> : <Navigate to="/login" />} />
                 <Route path="/login" Component={Login} />
                 <Route path="/register" Component={Register} />
             </Routes>

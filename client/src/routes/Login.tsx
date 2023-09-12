@@ -3,15 +3,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../services';
 
-
 const Login = () => {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
     });
 
-    const [errorMessage, setErrorMessage] = useState(''); // State for error message
-
+    const [errorMessage, setErrorMessage] = useState('');
     const navigator = useNavigate();
 
     const handleChange = (e: any) => {
