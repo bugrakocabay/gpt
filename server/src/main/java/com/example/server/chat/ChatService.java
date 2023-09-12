@@ -25,8 +25,6 @@ public class ChatService {
 
     @Autowired
     private ChatRepository chatRepository;
-    @Autowired
-    private UserRepository userRepository;
     private final Environment environment;
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Logger logger = Logger.getLogger(ChatService.class.getName());
@@ -40,22 +38,14 @@ public class ChatService {
         logger.info("Saving chat with id: " + chatDto.getId());
         Chat chat = new Chat();
         chat.setConversationId(chatDto.getId());
-        User user = userRepository.findById(chatDto.getUserId()).get();
-        String[] userChats = user.getChats();
-        if (userChats == null) {
-            userChats = new String[0];
-        }
-        String[] updatedChats = Arrays.copyOf(userChats, userChats.length + 1);
-        updatedChats[userChats.length] = chatDto.getId();
-        user.setChats(updatedChats);
-        userRepository.save(user);
+        chat.setUserId(chatDto.getUserId());
         return chatRepository.save(chat);
     }
 
     @Transactional
-    public List<Chat> getAllChats() {
+    public List<Chat> getAllChats(String userId) {
         logger.info("Getting all chats");
-        return chatRepository.findAll();
+        return chatRepository.getChatsByUserId(userId);
     }
 
     @Transactional

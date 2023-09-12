@@ -10,9 +10,9 @@ const Chat = () => {
     const [chatLog, setChatLog] = useState<ChatLog[]>([]);
     const [chatId, setChatId] = useState<string | null>(null);
     const [chatList, setChatList] = useState([]);
-
+    const userInfo = JSON.parse(localStorage.getItem("userInfo")!);
     useEffect(() => {
-        fetchChatList()
+        fetchChatList(userInfo.id)
             .then((responseChatList) => {
                 setChatList(responseChatList);
             })
@@ -32,7 +32,7 @@ const Chat = () => {
         setInput("");
         try {
             if (!chatId) {
-                createChat()
+                createChat(userInfo.id)
                     .then(async (id) => {
                         const response = await postChatMessage(id, input.trim());
                         setChatLog([
@@ -40,7 +40,7 @@ const Chat = () => {
                             { user: "gpt", message: `${response.message}` },
                         ]);
 
-                        const responseChatList = await fetchChatList();
+                        const responseChatList = await fetchChatList(userInfo.id);
                         setChatList(responseChatList);
                     })
                     .catch((error) => {
@@ -59,7 +59,7 @@ const Chat = () => {
         e.stopPropagation();
         try {
             await deleteChat(id);
-            const responseChatList = await fetchChatList();
+            const responseChatList = await fetchChatList(userInfo.id);
             setChatList(responseChatList);
         } catch (error) {
             console.error(error);
