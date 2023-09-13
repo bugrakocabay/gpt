@@ -4,6 +4,10 @@ import com.example.server.chat.ChatService;
 import com.example.server.config.JwtService;
 import com.example.server.exception.DuplicateException;
 import com.example.server.exception.PasswordException;
+import com.example.server.exception.ValidationError;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -14,7 +18,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.util.Set;
 import java.util.logging.Logger;
 
 @Service
@@ -23,6 +29,8 @@ public class UserService {
 
     @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    private Validator validator;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -32,6 +40,14 @@ public class UserService {
     public UserResponseDto saveUser(UserDto user) throws Exception {
         try {
             logger.info("Saving user with username: " + user.getUsername());
+            Set<ConstraintViolation<UserDto>> violations = validator.validate(user);
+            if (!violations.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (ConstraintViolation<UserDto> constraintViolation : violations) {
+                    sb.append(constraintViolation.getMessage()).append("\n");
+                }
+                throw new ConstraintViolationException(sb.toString(), violations);
+            }
             String hashedPassword = hashPassword(user.getPassword());
             User newUser = User.builder()
                     .username(user.getUsername())
@@ -44,6 +60,9 @@ public class UserService {
             logger.warning("Error saving user: " + e);
             if (e instanceof DuplicateKeyException) {
                 throw new DuplicateException("User already exists");
+            }
+            if (e instanceof ConstraintViolationException) {
+                throw new ValidationError(e.getMessage());
             }
             return null;
         }
