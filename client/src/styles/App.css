@@ -167,6 +167,39 @@
   background-color: #834f4f; /* Darker red color on hover */
 }
 
+.user-info {
+  display: flex;
+  justify-content: space-between; /* Align content horizontally */
+  align-items: center; /* Center content vertically */
+  margin-top: auto; /* Push the div to the bottom of the container */
+  padding: 10px; /* Add padding for spacing */
+  background-color: #343541; /* Background color */
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  position: relative; /* Position relative for absolute child */
+}
+
+.user-info p {
+  margin: 0;
+  font-size: 16px;
+  color: white; /* Text color */
+}
+
+.logout-button button {
+  background-color: #e54d42; /* Logout button background color */
+  color: white; /* Button text color */
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logout-button button:hover {
+  background-color: #d9382d; /* Button background color on hover */
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

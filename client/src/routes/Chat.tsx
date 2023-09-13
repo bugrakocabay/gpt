@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { ChatMessage } from "../components";
 import { fetchChatList, createChat, deleteChat, postChatMessage } from "../services";
 import { ChatDb, ChatLog } from "../interfaces";
+import { Link } from "react-router-dom";
+const userInfo = JSON.parse(localStorage.getItem("userInfo")!);
 
 const Chat = () => {
     const [input, setInput] = useState("");
     const [chatLog, setChatLog] = useState<ChatLog[]>([]);
     const [chatId, setChatId] = useState<string | null>(null);
     const [chatList, setChatList] = useState([]);
-    const userInfo = JSON.parse(localStorage.getItem("userInfo")!);
     useEffect(() => {
         fetchChatList(userInfo.id)
             .then((responseChatList) => {
@@ -66,6 +67,12 @@ const Chat = () => {
         }
     }
 
+    async function handleLogoutClick() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userInfo");
+        window.location.reload();
+    }
+
     function updateChatLogWithSelectedChat(id: string) {
         const selectedChat: ChatDb = chatList.find((chat: ChatDb) => chat.conversationId === id)!;
 
@@ -101,6 +108,14 @@ const Chat = () => {
                             </span>
                         </div>
                     ))}
+                </div>
+
+                {/* User Info and Logout Button */}
+                <div className="user-info">
+                    <p>User: {userInfo.username}</p>
+                    <span className="logout-button" onClick={handleLogoutClick}> 
+                        <button>Logout</button>
+                    </span>
                 </div>
             </aside>
             <section className="chatbox">
