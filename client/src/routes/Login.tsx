@@ -1,8 +1,7 @@
 import '../styles/Login.css';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 import { login } from '../services';
-
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -10,9 +9,7 @@ const Login = () => {
         password: '',
     });
 
-    const [errorMessage, setErrorMessage] = useState(''); // State for error message
-
-    const navigator = useNavigate();
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
@@ -27,7 +24,9 @@ const Login = () => {
         if (response?.status === 200) {
             const body = await response.json();
             localStorage.setItem('token', body.token);
-            navigator('/chat');
+            localStorage.setItem('userInfo', JSON.stringify(body));
+            window.location.reload()
+            return redirect('/chat');
         } else {
             const errorBody = await response?.json();
             setErrorMessage(errorBody.message);

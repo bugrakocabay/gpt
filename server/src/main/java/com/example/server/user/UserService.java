@@ -60,7 +60,7 @@ public class UserService {
             User foundUser = userRepository.findByUsername(user.getUsername());
             String jwtToken = jwtService.generateToken(foundUser);
 
-            return new LoginResponseDto(foundUser.getUsername(), Role.USER, jwtToken);
+            return new LoginResponseDto(foundUser.getId(),foundUser.getUsername(), Role.USER, jwtToken);
         } catch (Exception e) {
             logger.warning("Error logging in user: " + e);
             if (e instanceof BadCredentialsException || e instanceof InternalAuthenticationServiceException) {

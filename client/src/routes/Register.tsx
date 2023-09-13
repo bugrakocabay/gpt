@@ -9,6 +9,7 @@ function Register() {
         password: '',
     });
 
+    const [errorMessage, setErrorMessage] = useState('');
     const navigator = useNavigate();
 
     const handleChange = (e: any) => {
@@ -21,10 +22,11 @@ function Register() {
 
         const response = await register(formData.username, formData.password);
 
-        if (response) {
+        if (response?.status === 201) {
             navigator('/login');
         } else {
-            console.error('Registration failed');
+            const errorBody = await response?.json();
+            setErrorMessage(errorBody.message);
         }
     };
 
@@ -32,6 +34,9 @@ function Register() {
         <div className="register-container">
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
+                {/* Error message */}
+                {errorMessage && <div className="error-message">{errorMessage}</div>}
+                
                 <div className="form-group">
                     <label htmlFor="username">Username</label>
                     <input

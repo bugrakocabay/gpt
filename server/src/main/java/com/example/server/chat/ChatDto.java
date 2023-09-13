@@ -1,15 +1,12 @@
 package com.example.server.chat;
 
-import lombok.Getter;
+import lombok.*;
 
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChatDto {
     private String id;
-
-    public ChatDto() {
-    }
-
-    public ChatDto(String id) {
-        this.id = id;
-    }
+    private String userId;
 }

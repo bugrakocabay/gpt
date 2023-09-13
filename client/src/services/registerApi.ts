@@ -5,7 +5,7 @@ export const register = async (username: string, password: string) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password }),
         });
-        return response.json();
+        return response;
     } catch (error) {
         console.log(error);
         return null;

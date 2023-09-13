@@ -13,9 +13,9 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
-    @GetMapping
-    public List<Chat> getAllChats() {
-        return chatService.getAllChats();
+    @GetMapping("/{userId}")
+    public List<Chat> getAllChats(@PathVariable String userId) {
+        return chatService.getAllChats(userId);
     }
 
     @PostMapping
