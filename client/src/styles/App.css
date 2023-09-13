@@ -2,15 +2,36 @@
   text-align: center;
   display: flex;
   background-color: #282c34;
-  color:white;
+  color: white;
   position: absolute;
-  top: 0;bottom: 0; left: 0; right: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.message-content pre {
+  background-color: #282c34;
+  border: 1px solid #ddd;
+  padding: 12px;
+  overflow: auto;
+  font-size: 14px;
+  border-radius: 5px;
+  margin: 10px 0;
+  text-align: left!important;
 }
 
 .sidemenu {
   width: 260px;
   padding: 10px;
   background-color: #202123;
+  position: relative;
+  height: 100%;
 }
 
 .side-menu-button {
@@ -20,7 +41,8 @@
   border-radius: 5px;
   text-align: left;
 }
-.side-menu-button:hover{
+
+.side-menu-button:hover {
   background-color: rgb(255, 255, 255, 0.1);
 }
 
@@ -50,7 +72,8 @@
   padding: 12px;
   position: absolute;
   bottom: 0;
-  left: 0; right: 0;
+  left: 0;
+  right: 0;
 }
 
 .chat-input-textarea {
@@ -62,7 +85,7 @@
   border-radius: 5px;
   border: none;
   outline: none;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0,25);
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0, 25);
 }
 
 .App-header {
@@ -97,9 +120,9 @@
 
 .chat-log {
   text-align: left;
-  overflow: auto;
-  height: 100%; 
-  padding: 0 12px; 
+  max-height: calc(100% - 100px);
+  overflow-y: auto;
+  padding: 0 12px;
 }
 
 .chat-message.chatgpt {
@@ -155,39 +178,43 @@
 
 .close-button {
   color: #fff;
-  background-color: #605c5b; /* Red color for the button */
+  background-color: #605c5b;
   padding: 4px 8px;
-  border-radius: 50%; /* Makes the button circular */
+  border-radius: 50%;
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
 }
 
 .close-button:hover {
-  background-color: #834f4f; /* Darker red color on hover */
+  background-color: #834f4f;
 }
 
 .user-info {
   display: flex;
-  justify-content: space-between; /* Align content horizontally */
-  align-items: center; /* Center content vertically */
-  margin-top: auto; /* Push the div to the bottom of the container */
-  padding: 10px; /* Add padding for spacing */
-  background-color: #343541; /* Background color */
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding: 10px;
+  background-color: #343541;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  position: relative; /* Position relative for absolute child */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
 }
 
 .user-info p {
   margin: 0;
   font-size: 16px;
-  color: white; /* Text color */
+  color: white;
 }
 
 .logout-button button {
-  background-color: #e54d42; /* Logout button background color */
-  color: white; /* Button text color */
+  background-color: #e54d42;
+  color: white;
   border: none;
   border-radius: 5px;
   padding: 8px 16px;
@@ -197,14 +224,5 @@
 }
 
 .logout-button button:hover {
-  background-color: #d9382d; /* Button background color on hover */
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  background-color: #d9382d;
 }

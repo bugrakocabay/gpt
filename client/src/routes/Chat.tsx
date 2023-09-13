@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { ChatMessage } from "../components";
 import { fetchChatList, createChat, deleteChat, postChatMessage } from "../services";
 import { ChatDb, ChatLog } from "../interfaces";
-import { Link } from "react-router-dom";
 const userInfo = JSON.parse(localStorage.getItem("userInfo")!);
 
 const Chat = () => {
@@ -12,6 +11,8 @@ const Chat = () => {
     const [chatLog, setChatLog] = useState<ChatLog[]>([]);
     const [chatId, setChatId] = useState<string | null>(null);
     const [chatList, setChatList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
         fetchChatList(userInfo.id)
             .then((responseChatList) => {
@@ -31,6 +32,7 @@ const Chat = () => {
         e.preventDefault();
         let chatLogNew = [...chatLog, { user: "me", message: input }];
         setInput("");
+        setIsLoading(true);
         try {
             if (!chatId) {
                 createChat(userInfo.id)
@@ -46,13 +48,15 @@ const Chat = () => {
                     })
                     .catch((error) => {
                         console.error(error);
-                    });
+                    }).finally(() => setIsLoading(false));
             } else {
                 const response = await postChatMessage(chatId, input.trim());
                 setChatLog([...chatLogNew, { user: "gpt", message: `${response.message}` }]);
+                setIsLoading(false);
             }
         } catch (error) {
             console.error(error);
+            setIsLoading(false);
         }
     }
 
@@ -113,7 +117,7 @@ const Chat = () => {
                 {/* User Info and Logout Button */}
                 <div className="user-info">
                     <p>User: {userInfo.username}</p>
-                    <span className="logout-button" onClick={handleLogoutClick}> 
+                    <span className="logout-button" onClick={handleLogoutClick}>
                         <button>Logout</button>
                     </span>
                 </div>
@@ -132,6 +136,7 @@ const Chat = () => {
                             className="chat-input-textarea"
                             placeholder="Type your message here"
                         ></input>
+                        {isLoading && <img src="loading.gif" alt="loading" />}
                     </form>
                 </div>
             </section>
