@@ -1,12 +1,13 @@
-package com.example.server.user;
+package com.example.server.dto.responses;
 
+import com.example.server.enums.Role;
 import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponseDto {
+public class RegisterResponse {
     private String id;
     private String username;
     private Role role;

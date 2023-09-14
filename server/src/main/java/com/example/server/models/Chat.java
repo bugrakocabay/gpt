@@ -1,4 +1,4 @@
-package com.example.server.chat;
+package com.example.server.models;
 
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;

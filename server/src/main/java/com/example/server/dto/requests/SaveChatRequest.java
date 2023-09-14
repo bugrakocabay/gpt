@@ -1,4 +1,4 @@
-package com.example.server.chat;
+package com.example.server.dto.requests;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatDto {
+public class SaveChatRequest {
     private String id;
     private String userId;
 }

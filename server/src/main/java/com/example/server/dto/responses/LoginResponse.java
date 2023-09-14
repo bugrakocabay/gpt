@@ -1,5 +1,6 @@
-package com.example.server.user;
+package com.example.server.dto.responses;
 
+import com.example.server.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponseDto {
+public class LoginResponse {
 
     private String id;
     private String username;

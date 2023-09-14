@@ -1,10 +1,15 @@
-package com.example.server.user;
+package com.example.server.services;
 
-import com.example.server.chat.ChatService;
+import com.example.server.enums.Role;
+import com.example.server.models.User;
+import com.example.server.repositories.UserRepository;
 import com.example.server.config.JwtService;
-import com.example.server.exception.DuplicateException;
-import com.example.server.exception.PasswordException;
-import com.example.server.exception.ValidationError;
+import com.example.server.exceptions.DuplicateException;
+import com.example.server.exceptions.PasswordException;
+import com.example.server.exceptions.ValidationError;
+import com.example.server.dto.responses.LoginResponse;
+import com.example.server.dto.requests.LoginRequest;
+import com.example.server.dto.responses.RegisterResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -18,7 +23,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Set;
 import java.util.logging.Logger;
@@ -37,13 +41,13 @@ public class UserService {
     private final Logger logger = Logger.getLogger(ChatService.class.getName());
 
     @Transactional
-    public UserResponseDto saveUser(UserDto user) throws Exception {
+    public RegisterResponse saveUser(LoginRequest user) throws Exception {
         try {
             logger.info("Saving user with username: " + user.getUsername());
-            Set<ConstraintViolation<UserDto>> violations = validator.validate(user);
+            Set<ConstraintViolation<LoginRequest>> violations = validator.validate(user);
             if (!violations.isEmpty()) {
                 StringBuilder sb = new StringBuilder();
-                for (ConstraintViolation<UserDto> constraintViolation : violations) {
+                for (ConstraintViolation<LoginRequest> constraintViolation : violations) {
                     sb.append(constraintViolation.getMessage()).append("\n");
                 }
                 throw new ConstraintViolationException(sb.toString(), violations);
@@ -55,7 +59,7 @@ public class UserService {
                     .role(Role.USER)
                     .build();
             User savedUser = userRepository.save(newUser);
-            return new UserResponseDto(savedUser.getId(), savedUser.getUsername(), Role.USER);
+            return new RegisterResponse(savedUser.getId(), savedUser.getUsername(), Role.USER);
         } catch (Exception e) {
             logger.warning("Error saving user: " + e);
             if (e instanceof DuplicateKeyException) {
@@ -69,7 +73,7 @@ public class UserService {
     }
 
     @Transactional
-    public LoginResponseDto login(UserDto user) throws Exception {
+    public LoginResponse login(LoginRequest user) throws Exception {
         try {
             logger.info("Logging in user with username: " + user.getUsername());
             authenticationManager.authenticate(
@@ -79,7 +83,7 @@ public class UserService {
             User foundUser = userRepository.findByUsername(user.getUsername());
             String jwtToken = jwtService.generateToken(foundUser);
 
-            return new LoginResponseDto(foundUser.getId(),foundUser.getUsername(), Role.USER, jwtToken);
+            return new LoginResponse(foundUser.getId(),foundUser.getUsername(), Role.USER, jwtToken);
         } catch (Exception e) {
             logger.warning("Error logging in user: " + e);
             if (e instanceof BadCredentialsException || e instanceof InternalAuthenticationServiceException) {

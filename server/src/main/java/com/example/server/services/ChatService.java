@@ -1,5 +1,12 @@
-package com.example.server.chat;
+package com.example.server.services;
 
+import com.example.server.dto.requests.SaveChatRequest;
+import com.example.server.dto.responses.ChatResponse;
+import com.example.server.models.Message;
+import com.example.server.dto.requests.UpdateChatRequest;
+import com.example.server.exceptions.NotFoundException;
+import com.example.server.models.Chat;
+import com.example.server.repositories.ChatRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +22,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
@@ -34,15 +42,23 @@ public class ChatService {
     @Transactional
     public Chat getChatById(String id) {
         logger.info("Getting chat with id: " + id);
-        return chatRepository.findByConversationId(id);
+
+        // Attempt to find the chat by ID
+        Optional<Chat> chatOptional = chatRepository.findById(id);
+
+        if (chatOptional.isPresent()) {
+            return chatOptional.get();
+        } else {
+            throw new NotFoundException("Chat with ID " + id + " not found");
+        }
     }
 
     @Transactional
-    public Chat saveChatWithId(ChatDto chatDto) {
-        logger.info("Saving chat with id: " + chatDto.getId());
+    public Chat saveChatWithId(SaveChatRequest saveChatRequest) {
+        logger.info("Saving chat with id: " + saveChatRequest.getId());
         Chat chat = new Chat();
-        chat.setConversationId(chatDto.getId());
-        chat.setUserId(chatDto.getUserId());
+        chat.setConversationId(saveChatRequest.getId());
+        chat.setUserId(saveChatRequest.getUserId());
         return chatRepository.save(chat);
     }
 
@@ -54,7 +70,7 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatResponseDto updateChatMessage(UpdateChatDto requestBody) {
+    public ChatResponse updateChatMessage(UpdateChatRequest requestBody) {
         logger.info("Updating chat with id: " + requestBody.getId());
         try {
             Chat chat = chatRepository.findByConversationId(requestBody.getId());
@@ -82,10 +98,10 @@ public class ChatService {
             chat.setMessage(updatedMessages);
             chatRepository.save(chat);
 
-            ChatResponseDto chatResponseDto = new ChatResponseDto();
-            chatResponseDto.setId(requestBody.getId());
-            chatResponseDto.setMessage(aiResponse);
-            return chatResponseDto;
+            ChatResponse chatResponse = new ChatResponse();
+            chatResponse.setId(requestBody.getId());
+            chatResponse.setMessage(aiResponse);
+            return chatResponse;
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -94,21 +110,21 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatResponseDto deleteChat(String id) {
+    public ChatResponse deleteChat(String id) {
         logger.info("Deleting chat with id: " + id);
         Chat chat = chatRepository.findByConversationId(id);
-        ChatResponseDto chatResponseDto = new ChatResponseDto();
+        ChatResponse chatResponse = new ChatResponse();
         if (chat == null) {
-            chatResponseDto.setId(id);
-            chatResponseDto.setMessage("Chat not found");
-            chatResponseDto.setStatus(false);
-            return chatResponseDto;
+            chatResponse.setId(id);
+            chatResponse.setMessage("Chat not found");
+            chatResponse.setStatus(false);
+            return chatResponse;
         }
         chatRepository.delete(chat);
-        chatResponseDto.setId(id);
-        chatResponseDto.setMessage("OK");
-        chatResponseDto.setStatus(true);
-        return chatResponseDto;
+        chatResponse.setId(id);
+        chatResponse.setMessage("OK");
+        chatResponse.setStatus(true);
+        return chatResponse;
     }
 
     private CompletableFuture<String> sendChatRequest(String userMessage) {
