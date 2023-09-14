@@ -59,7 +59,7 @@ public class UserService {
                     .role(Role.USER)
                     .build();
             User savedUser = userRepository.save(newUser);
-            return new RegisterResponse(savedUser.getId(), savedUser.getUsername(), Role.USER);
+            return new RegisterResponse(true, savedUser.getId(), savedUser.getUsername(), Role.USER);
         } catch (Exception e) {
             logger.warning("Error saving user: " + e);
             if (e instanceof DuplicateKeyException) {
@@ -83,7 +83,7 @@ public class UserService {
             User foundUser = userRepository.findByUsername(user.getUsername());
             String jwtToken = jwtService.generateToken(foundUser);
 
-            return new LoginResponse(foundUser.getId(),foundUser.getUsername(), Role.USER, jwtToken);
+            return new LoginResponse(true, foundUser.getId(),foundUser.getUsername(), Role.USER, jwtToken);
         } catch (Exception e) {
             logger.warning("Error logging in user: " + e);
             if (e instanceof BadCredentialsException || e instanceof InternalAuthenticationServiceException) {

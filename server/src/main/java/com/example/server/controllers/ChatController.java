@@ -5,6 +5,7 @@ import com.example.server.dto.responses.ChatResponse;
 import com.example.server.services.ChatService;
 import com.example.server.dto.requests.UpdateChatRequest;
 import com.example.server.models.Chat;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class ChatController {
     }
 
     @PostMapping("/message")
-    public ChatResponse updateChatMessage(@RequestBody UpdateChatRequest updateChatRequest) {
+    public ChatResponse updateChatMessage(@RequestBody UpdateChatRequest updateChatRequest) throws JsonProcessingException {
         return chatService.updateChatMessage(updateChatRequest);
     }
 

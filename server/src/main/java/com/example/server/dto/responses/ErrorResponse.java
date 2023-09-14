@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatResponse {
-
-    private String id;
-    private String message;
+public class ErrorResponse {
     private boolean status;
+    private String message;
 }

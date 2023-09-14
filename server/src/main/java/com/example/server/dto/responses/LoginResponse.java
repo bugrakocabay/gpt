@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginResponse {
 
+    private boolean status;
     private String id;
     private String username;
     private Role role;

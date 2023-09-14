@@ -8,6 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterResponse {
+
+    private boolean status;
     private String id;
     private String username;
     private Role role;
