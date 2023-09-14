@@ -10,6 +10,7 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/" element={<Navigate to="/chat" />} />
                 <Route
                     path="/chat"
                     element={isAuthenticated() ? <Chat /> : <Navigate to="/login" />}

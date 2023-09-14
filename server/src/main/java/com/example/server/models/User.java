@@ -1,6 +1,6 @@
-package com.example.server.user;
+package com.example.server.models;
 
-import com.example.server.chat.Chat;
+import com.example.server.enums.Role;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;

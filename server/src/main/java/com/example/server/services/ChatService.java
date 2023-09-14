@@ -1,5 +1,13 @@
-package com.example.server.chat;
+package com.example.server.services;
 
+import com.example.server.dto.requests.SaveChatRequest;
+import com.example.server.dto.responses.ChatResponse;
+import com.example.server.models.Message;
+import com.example.server.dto.requests.UpdateChatRequest;
+import com.example.server.exceptions.NotFoundException;
+import com.example.server.models.Chat;
+import com.example.server.repositories.ChatRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -33,11 +40,23 @@ public class ChatService {
     }
 
     @Transactional
-    public Chat saveChatWithId(ChatDto chatDto) {
-        logger.info("Saving chat with id: " + chatDto.getId());
+    public Chat getChatById(String id) {
+        logger.info("Getting chat with id: " + id);
+        Optional<Chat> chatOptional = chatRepository.findByConversationId(id);
+        logger.info("Chat found: " + chatOptional);
+
+        if (chatOptional.isEmpty()) {
+            throw new NotFoundException("Chat not found");
+        }
+        return chatOptional.get();
+    }
+
+    @Transactional
+    public Chat saveChatWithId(SaveChatRequest saveChatRequest) {
+        logger.info("Saving chat with id: " + saveChatRequest.getId());
         Chat chat = new Chat();
-        chat.setConversationId(chatDto.getId());
-        chat.setUserId(chatDto.getUserId());
+        chat.setConversationId(saveChatRequest.getId());
+        chat.setUserId(saveChatRequest.getUserId());
         return chatRepository.save(chat);
     }
 
@@ -49,60 +68,51 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatResponseDto updateChatMessage(UpdateChatDto requestBody) {
+    public ChatResponse updateChatMessage(UpdateChatRequest requestBody) throws JsonProcessingException {
         logger.info("Updating chat with id: " + requestBody.getId());
-        Chat chat = chatRepository.findByConversationId(requestBody.getId());
+        Optional<Chat> chat = chatRepository.findByConversationId(requestBody.getId());
         String userMessage = requestBody.getMessage();
+        if (chat.isEmpty()) {
+            throw new NotFoundException("Chat not found");
+        }
+        Chat foundChat = chat.get();
 
         String openAIResponse = sendChatRequest(userMessage).join();
         JsonNode jsonResponse;
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            jsonResponse = objectMapper.readTree(openAIResponse);
-            String aiResponse = jsonResponse
-                    .get("choices")
-                    .get(0)
-                    .get("message")
-                    .get("content")
-                    .asText();
 
-            Message newMessage = new Message(requestBody.getMessage(), aiResponse);
-            Message[] currentMessages = chat.getMessage();
-            if (currentMessages == null) {
-                currentMessages = new Message[0];
-            }
-            Message[] updatedMessages = Arrays.copyOf(currentMessages, currentMessages.length + 1);
-            updatedMessages[currentMessages.length] = newMessage;
-            chat.setMessage(updatedMessages);
-            chatRepository.save(chat);
+        ObjectMapper objectMapper = new ObjectMapper();
+        jsonResponse = objectMapper.readTree(openAIResponse);
+        String aiResponse = jsonResponse
+                .get("choices")
+                .get(0)
+                .get("message")
+                .get("content")
+                .asText();
 
-            ChatResponseDto chatResponseDto = new ChatResponseDto();
-            chatResponseDto.setId(requestBody.getId());
-            chatResponseDto.setMessage(aiResponse);
-            return chatResponseDto;
+        Message newMessage = new Message(requestBody.getMessage(), aiResponse);
+        Message[] currentMessages = foundChat.getMessage();
+        if (currentMessages == null) {
+            currentMessages = new Message[0];
         }
-        catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        Message[] updatedMessages = Arrays.copyOf(currentMessages, currentMessages.length + 1);
+        updatedMessages[currentMessages.length] = newMessage;
+        foundChat.setMessage(updatedMessages);
+        chatRepository.save(foundChat);
+
+        return ChatResponse.builder().status(true).message(aiResponse).id(requestBody.getId()).build();
     }
 
     @Transactional
-    public ChatResponseDto deleteChat(String id) {
+    public ChatResponse deleteChat(String id) {
         logger.info("Deleting chat with id: " + id);
-        Chat chat = chatRepository.findByConversationId(id);
-        ChatResponseDto chatResponseDto = new ChatResponseDto();
-        if (chat == null) {
-            chatResponseDto.setId(id);
-            chatResponseDto.setMessage("Chat not found");
-            chatResponseDto.setStatus(false);
-            return chatResponseDto;
+        Optional<Chat> chat = chatRepository.findByConversationId(id);
+        if (chat.isEmpty()) {
+            throw new NotFoundException("Chat not found");
         }
-        chatRepository.delete(chat);
-        chatResponseDto.setId(id);
-        chatResponseDto.setMessage("OK");
-        chatResponseDto.setStatus(true);
-        return chatResponseDto;
+        Chat foundChat = chat.get();
+        chatRepository.delete(foundChat);
+
+        return ChatResponse.builder().status(true).message("Chat deleted").id(foundChat.getConversationId()).build();
     }
 
     private CompletableFuture<String> sendChatRequest(String userMessage) {

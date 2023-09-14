@@ -1,4 +1,4 @@
-package com.example.server.user;
+package com.example.server.enums;
 
 public enum Role {
     USER,

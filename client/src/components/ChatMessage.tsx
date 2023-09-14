@@ -5,7 +5,9 @@ const ChatMessage = ({ message }: any) => {
         <div className={`chat-message ${message.user === "gpt" && "chatgpt"}`}>
             <div className="chat-message-center">
                 <div className={`avatar ${message.user === "gpt" && "chatgpt"}`} />
-                <ReactMarkdown>{message.message}</ReactMarkdown>
+                <div className="message-content">
+                    <ReactMarkdown>{message.message}</ReactMarkdown>
+                </div>
             </div>
         </div>
     );
