@@ -2,7 +2,7 @@ import "../styles/App.css";
 import "../styles/normal.css";
 import { useState, useEffect } from "react";
 import { ChatMessage } from "../components";
-import { fetchChatList, createChat, deleteChat, postChatMessage } from "../services";
+import { fetchChatById, fetchChatList, createChat, deleteChat, postChatMessage } from "../services";
 import { ChatDb, ChatLog } from "../interfaces";
 const userInfo = JSON.parse(localStorage.getItem("userInfo")!);
 
@@ -77,8 +77,8 @@ const Chat = () => {
         window.location.reload();
     }
 
-    function updateChatLogWithSelectedChat(id: string) {
-        const selectedChat: ChatDb = chatList.find((chat: ChatDb) => chat.conversationId === id)!;
+    async function updateChatLogWithSelectedChat(id: string) {
+        const selectedChat: ChatDb = await fetchChatById(id);
 
         let chatLogNew: ChatLog[] = [];
         selectedChat.message.forEach((message) => {
@@ -101,7 +101,7 @@ const Chat = () => {
                         <div
                             key={chat._id}
                             className="chat-list-item"
-                            onClick={() => updateChatLogWithSelectedChat(chat.conversationId)}
+                            onClick={() => {updateChatLogWithSelectedChat(chat.conversationId)}}
                         >
                             {chat._id}
                             <span

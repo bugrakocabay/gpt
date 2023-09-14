@@ -15,7 +15,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
@@ -30,6 +29,12 @@ public class ChatService {
 
     public ChatService(Environment environment) {
         this.environment = environment;
+    }
+
+    @Transactional
+    public Chat getChatById(String id) {
+        logger.info("Getting chat with id: " + id);
+        return chatRepository.findByConversationId(id);
     }
 
     @Transactional
@@ -51,12 +56,13 @@ public class ChatService {
     @Transactional
     public ChatResponseDto updateChatMessage(UpdateChatDto requestBody) {
         logger.info("Updating chat with id: " + requestBody.getId());
-        Chat chat = chatRepository.findByConversationId(requestBody.getId());
-        String userMessage = requestBody.getMessage();
-
-        String openAIResponse = sendChatRequest(userMessage).join();
-        JsonNode jsonResponse;
         try {
+            Chat chat = chatRepository.findByConversationId(requestBody.getId());
+            String userMessage = requestBody.getMessage();
+
+            String openAIResponse = sendChatRequest(userMessage).join();
+            JsonNode jsonResponse;
+
             ObjectMapper objectMapper = new ObjectMapper();
             jsonResponse = objectMapper.readTree(openAIResponse);
             String aiResponse = jsonResponse

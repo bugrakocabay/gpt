@@ -13,6 +13,11 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
+    @GetMapping("/id/{id}")
+    public Chat getChatById(@PathVariable String id) {
+        return chatService.getChatById(id);
+    }
+
     @GetMapping("/{userId}")
     public List<Chat> getAllChats(@PathVariable String userId) {
         return chatService.getAllChats(userId);
