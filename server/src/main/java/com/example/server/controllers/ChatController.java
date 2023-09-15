@@ -1,9 +1,10 @@
 package com.example.server.controllers;
 
 import com.example.server.dto.requests.SaveChatRequest;
+import com.example.server.dto.requests.UpdateChatRequest;
 import com.example.server.dto.responses.ChatResponse;
 import com.example.server.services.ChatService;
-import com.example.server.dto.requests.UpdateChatRequest;
+import com.example.server.dto.requests.SendChatMessageRequest;
 import com.example.server.models.Chat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,22 +27,27 @@ public class ChatController {
     }
 
     @GetMapping("/{userId}")
-    public List<Chat> getAllChats(@PathVariable String userId) {
-        return chatService.getAllChats(userId);
+    public ResponseEntity<List<Chat>> getAllChats(@PathVariable String userId) {
+        return new ResponseEntity<>(chatService.getAllChats(userId), null, 200);
     }
 
     @PostMapping
-    public Chat saveChatWithId(@RequestBody SaveChatRequest saveChatRequest) {
-        return chatService.saveChatWithId(saveChatRequest);
+    public ResponseEntity<Chat> saveChatWithId(@RequestBody SaveChatRequest saveChatRequest) {
+        return new ResponseEntity<>(chatService.saveChatWithId(saveChatRequest), null, 201);
     }
 
     @PostMapping("/message")
-    public ChatResponse updateChatMessage(@RequestBody UpdateChatRequest updateChatRequest) throws JsonProcessingException {
-        return chatService.updateChatMessage(updateChatRequest);
+    public ResponseEntity<ChatResponse> updateChatMessage(@RequestBody SendChatMessageRequest sendChatMessageRequest) {
+        return new ResponseEntity<>(chatService.sendChatMessage(sendChatMessageRequest), null, 200);
     }
 
     @DeleteMapping("/{id}")
-    public ChatResponse deleteChat(@PathVariable String id) {
-        return chatService.deleteChat(id);
+    public ResponseEntity<ChatResponse> deleteChat(@PathVariable String id) {
+        return new ResponseEntity<>(chatService.deleteChat(id), null, 200);
+    }
+
+    @PutMapping
+    public ResponseEntity<ChatResponse> updateChat(@RequestBody UpdateChatRequest chat) {
+        return new ResponseEntity<>(chatService.updateChat(chat), null, 200);
     }
 }

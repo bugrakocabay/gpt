@@ -1,6 +1,10 @@
 package com.example.server.dto.requests;
 
-import lombok.*;
+import com.example.server.models.Message;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -8,6 +12,6 @@ import lombok.*;
 @AllArgsConstructor
 public class UpdateChatRequest {
 
-    private String id;
-    private String message;
+        private String conversationId;
+        private String alias;
 }

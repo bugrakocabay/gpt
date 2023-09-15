@@ -14,4 +14,5 @@ public class Chat {
     private String conversationId;
     private Message[] message;
     private String userId;
+    private String alias;
 }

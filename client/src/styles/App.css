@@ -41,10 +41,14 @@
   border: 1px solid white;
   border-radius: 5px;
   text-align: left;
+  font-size: 16px; /* Increase font size */
+  font-weight: bold; /* Make text bold */
+  transition: background-color 0.3s; /* Add transition for smooth color change */
 }
 
 .side-menu-button:hover {
   background-color: rgb(255, 255, 255, 0.1);
+  color: #61dafb; /* Change text color on hover */
 }
 
 .side-menu-button span {
@@ -113,6 +117,9 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: background-color 0.3s;
+  position: relative; /* Add relative positioning here */
+  display: flex; /* Add this to align the content and button */
+  justify-content: space-between; /* Add this to separate the content and button */
 }
 
 .chat-list-item:hover {
@@ -187,6 +194,23 @@
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
+  position: relative; 
+  width: 20px; 
+  height: 20px; /* Same as width for a perfect circle */
+}
+
+.close-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  width: 10px;
+  height: 10px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 47.971 47.971"><g><g><path d="M28.228 23.986L47.092 5.122a2.998 2.998 0 00-4.242-4.242L23.986 19.744 4.121.88a2.998 2.998 0 00-4.242 4.242l18.865 18.864L-.121 42.85a2.998 2.998 0 104.242 4.242l18.865-18.864L42.85 47.091a2.998 2.998 0 104.242-4.242L28.228 23.986z" fill="%23ffffff"/></g></g></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .close-button:hover {

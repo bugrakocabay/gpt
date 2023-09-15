@@ -102,16 +102,16 @@ const Chat = () => {
                 <div className="chat-list">
                     {chatList.map((chat: ChatDb) => (
                         <div
-                            key={chat._id}
+                            key={chat.alias ? chat.alias: `${chat._id.slice(0, 15)}...`}
                             className="chat-list-item"
                             onClick={() => {updateChatLogWithSelectedChat(chat.conversationId)}}
                         >
-                            {chat._id}
+                            {chat.alias ? chat.alias: `${chat._id.slice(0, 15)}...`}
                             <span
                                 className="close-button"
                                 onClick={(e) => handleDeleteClick(e, chat.conversationId)}
                             >
-                                X
+                                
                             </span>
                         </div>
                     ))}
