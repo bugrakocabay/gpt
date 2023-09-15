@@ -1,6 +1,6 @@
 import "../styles/App.css";
 import "../styles/normal.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChatMessage } from "../components";
 import { fetchChatById, fetchChatList, createChat, deleteChat, postChatMessage } from "../services";
 import { ChatDb, ChatLog } from "../interfaces";
@@ -12,6 +12,7 @@ const Chat = () => {
     const [chatId, setChatId] = useState<string | null>(null);
     const [chatList, setChatList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const chatLogRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         fetchChatList(userInfo.id)
@@ -22,6 +23,12 @@ const Chat = () => {
                 console.error("Error fetching chat list:", error);
             });
     }, []);
+
+    useEffect(() => {
+        if (chatLogRef.current) {
+            chatLogRef.current.scrollTop = chatLogRef.current.scrollHeight;
+        }
+    }, [chatLog]);
 
     function clearChat() {
         setChatLog([]);
@@ -49,7 +56,8 @@ const Chat = () => {
                     })
                     .catch((error) => {
                         console.error(error);
-                    }).finally(() => {
+                    })
+                    .finally(() => {
                         setIsLoading(false);
                     });
             } else {
@@ -102,17 +110,17 @@ const Chat = () => {
                 <div className="chat-list">
                     {chatList.map((chat: ChatDb) => (
                         <div
-                            key={chat.alias ? chat.alias: `${chat._id.slice(0, 15)}...`}
+                            key={chat.alias ? chat.alias : `${chat._id.slice(0, 15)}...`}
                             className="chat-list-item"
-                            onClick={() => {updateChatLogWithSelectedChat(chat.conversationId)}}
+                            onClick={() => {
+                                updateChatLogWithSelectedChat(chat.conversationId);
+                            }}
                         >
-                            {chat.alias ? chat.alias: `${chat._id.slice(0, 15)}...`}
+                            {chat.alias ? chat.alias : `${chat._id.slice(0, 15)}...`}
                             <span
                                 className="close-button"
                                 onClick={(e) => handleDeleteClick(e, chat.conversationId)}
-                            >
-                                
-                            </span>
+                            ></span>
                         </div>
                     ))}
                 </div>
@@ -126,19 +134,19 @@ const Chat = () => {
                 </div>
             </aside>
             <section className="chatbox">
-                <div className="chat-log">
+                <div className="chat-log" ref={chatLogRef}>
                     {chatLog.map((message, index) => (
                         <ChatMessage key={index} message={message} />
                     ))}
                 </div>
                 <div className="chat-input-holder">
                     <form onSubmit={handleSubmit}>
-                        <input
+                        <textarea
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             className="chat-input-textarea"
                             placeholder="Type your message here"
-                        ></input>
+                        ></textarea>
                         {isLoading && <img src="loading.gif" alt="loading" />}
                     </form>
                 </div>

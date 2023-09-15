@@ -1,6 +1,5 @@
 package com.example.server.dto.requests;
 
-import com.example.server.models.Message;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
