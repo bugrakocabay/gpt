@@ -45,10 +45,13 @@ const Chat = () => {
 
                         const responseChatList = await fetchChatList(userInfo.id);
                         setChatList(responseChatList);
+                        setChatId(id);
                     })
                     .catch((error) => {
                         console.error(error);
-                    }).finally(() => setIsLoading(false));
+                    }).finally(() => {
+                        setIsLoading(false);
+                    });
             } else {
                 const response = await postChatMessage(chatId, input.trim());
                 setChatLog([...chatLogNew, { user: "gpt", message: `${response.message}` }]);
