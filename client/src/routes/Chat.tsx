@@ -2,7 +2,7 @@ import "../styles/App.css";
 import "../styles/normal.css";
 import { useState, useEffect, useRef } from "react";
 import { ChatMessage } from "../components";
-import { fetchChatById, fetchChatList, createChat, deleteChat, postChatMessage } from "../services";
+import { fetchChatById, fetchChatList, createChat, deleteChat, postChatMessage, editAliasRequest } from "../services";
 import { ChatDb, ChatLog } from "../interfaces";
 const userInfo = JSON.parse(localStorage.getItem("userInfo")!);
 
@@ -12,6 +12,8 @@ const Chat = () => {
     const [chatId, setChatId] = useState<string | null>(null);
     const [chatList, setChatList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [newAlias, setNewAlias] = useState("");
     const chatLogRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -100,6 +102,20 @@ const Chat = () => {
         setChatId(selectedChat.conversationId);
     }
 
+    async function handleEditClick(e: any, convId: string) {
+        e.stopPropagation();
+        const alias = prompt("Enter a new alias for this chat:");
+        if (alias) {
+            try {
+                await editAliasRequest(convId, alias);
+                const responseChatList = await fetchChatList(userInfo.id);
+                setChatList(responseChatList);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
+
     return (
         <div className="App">
             <aside className="sidemenu">
@@ -117,10 +133,16 @@ const Chat = () => {
                             }}
                         >
                             {chat.alias ? chat.alias : `${chat._id.slice(0, 15)}...`}
-                            <span
-                                className="close-button"
-                                onClick={(e) => handleDeleteClick(e, chat.conversationId)}
-                            ></span>
+                            <div className="button-container">
+                                <span
+                                    className="edit-button"
+                                    onClick={(e) => handleEditClick(e, chat.conversationId)}
+                                ></span>
+                                <span
+                                    className="close-button"
+                                    onClick={(e) => handleDeleteClick(e, chat.conversationId)}
+                                ></span>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -141,12 +163,12 @@ const Chat = () => {
                 </div>
                 <div className="chat-input-holder">
                     <form onSubmit={handleSubmit}>
-                        <textarea
+                        <input
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             className="chat-input-textarea"
                             placeholder="Type your message here"
-                        ></textarea>
+                        ></input>
                         {isLoading && <img src="loading.gif" alt="loading" />}
                     </form>
                 </div>

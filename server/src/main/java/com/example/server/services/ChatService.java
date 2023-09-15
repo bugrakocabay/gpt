@@ -123,7 +123,13 @@ public class ChatService {
         foundChat.setAlias(requestBody.getAlias());
         chatRepository.save(foundChat);
 
-        return ChatResponse.builder().status(true).message("Chat updated").id(requestBody.getConversationId()).build();
+        return ChatResponse
+                .builder()
+                .status(true)
+                .message("Chat updated")
+                .id(requestBody.getConversationId())
+                .alias(requestBody.getAlias())
+                .build();
     }
 
     @Transactional

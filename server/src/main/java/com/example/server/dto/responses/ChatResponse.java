@@ -14,4 +14,5 @@ public class ChatResponse {
     private String id;
     private String message;
     private boolean status;
+    private String alias;
 }

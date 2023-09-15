@@ -41,14 +41,14 @@
   border: 1px solid white;
   border-radius: 5px;
   text-align: left;
-  font-size: 16px; /* Increase font size */
-  font-weight: bold; /* Make text bold */
-  transition: background-color 0.3s; /* Add transition for smooth color change */
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
 }
 
 .side-menu-button:hover {
   background-color: rgb(255, 255, 255, 0.1);
-  color: #61dafb; /* Change text color on hover */
+  color: #61dafb;
 }
 
 .side-menu-button span {
@@ -118,9 +118,9 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: background-color 0.3s;
-  position: relative; /* Add relative positioning here */
-  display: flex; /* Add this to align the content and button */
-  justify-content: space-between; /* Add this to separate the content and button */
+  position: relative;
+  display: flex;
+  justify-content: space-between;
 }
 
 .chat-list-item:hover {
@@ -197,7 +197,7 @@
   font-size: 14px;
   position: relative; 
   width: 20px; 
-  height: 20px; /* Same as width for a perfect circle */
+  height: 20px;
 }
 
 .close-button::before {
@@ -216,6 +216,44 @@
 
 .close-button:hover {
   background-color: #834f4f;
+}
+
+.edit-button {
+  color: #fff;
+  background-color: #5b5c60;
+  padding: 4px 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.edit-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  width: 10px;
+  height: 10px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M384 224h-96v-96c0-17.7-14.3-32-32-32s-32 14.3-32 32v96h-96c-17.7 0-32 14.3-32 32s14.3 32 32 32h96v96c0 17.7 14.3 32 32 32s32-14.3 32-32v-96h96c17.7 0 32-14.3 32-32s-14.3-32-32-32z"/></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.edit-button:hover {
+  background-color: #4f5b83;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-grow: 1;
 }
 
 .user-info {
