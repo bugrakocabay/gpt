@@ -45,3 +45,12 @@ export async function fetchChatById(id: string) {
     });
     return response.json();
 }
+
+export async function editAliasRequest(convId: string, alias: string) {
+    const response = await fetch(`http://localhost:8080/chat`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwtToken}` },
+        body: JSON.stringify({ conversationId: convId, alias }),
+    });
+    return response.json();
+}

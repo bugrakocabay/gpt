@@ -1,8 +1,8 @@
 import "../styles/App.css";
 import "../styles/normal.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChatMessage } from "../components";
-import { fetchChatById, fetchChatList, createChat, deleteChat, postChatMessage } from "../services";
+import { fetchChatById, fetchChatList, createChat, deleteChat, postChatMessage, editAliasRequest } from "../services";
 import { ChatDb, ChatLog } from "../interfaces";
 const userInfo = JSON.parse(localStorage.getItem("userInfo")!);
 
@@ -12,6 +12,9 @@ const Chat = () => {
     const [chatId, setChatId] = useState<string | null>(null);
     const [chatList, setChatList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [newAlias, setNewAlias] = useState("");
+    const chatLogRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         fetchChatList(userInfo.id)
@@ -22,6 +25,12 @@ const Chat = () => {
                 console.error("Error fetching chat list:", error);
             });
     }, []);
+
+    useEffect(() => {
+        if (chatLogRef.current) {
+            chatLogRef.current.scrollTop = chatLogRef.current.scrollHeight;
+        }
+    }, [chatLog]);
 
     function clearChat() {
         setChatLog([]);
@@ -45,10 +54,14 @@ const Chat = () => {
 
                         const responseChatList = await fetchChatList(userInfo.id);
                         setChatList(responseChatList);
+                        setChatId(id);
                     })
                     .catch((error) => {
                         console.error(error);
-                    }).finally(() => setIsLoading(false));
+                    })
+                    .finally(() => {
+                        setIsLoading(false);
+                    });
             } else {
                 const response = await postChatMessage(chatId, input.trim());
                 setChatLog([...chatLogNew, { user: "gpt", message: `${response.message}` }]);
@@ -89,6 +102,20 @@ const Chat = () => {
         setChatId(selectedChat.conversationId);
     }
 
+    async function handleEditClick(e: any, convId: string) {
+        e.stopPropagation();
+        const alias = prompt("Enter a new alias for this chat:");
+        if (alias) {
+            try {
+                await editAliasRequest(convId, alias);
+                const responseChatList = await fetchChatList(userInfo.id);
+                setChatList(responseChatList);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
+
     return (
         <div className="App">
             <aside className="sidemenu">
@@ -99,17 +126,23 @@ const Chat = () => {
                 <div className="chat-list">
                     {chatList.map((chat: ChatDb) => (
                         <div
-                            key={chat._id}
+                            key={chat.alias ? chat.alias : `${chat._id.slice(0, 15)}...`}
                             className="chat-list-item"
-                            onClick={() => {updateChatLogWithSelectedChat(chat.conversationId)}}
+                            onClick={() => {
+                                updateChatLogWithSelectedChat(chat.conversationId);
+                            }}
                         >
-                            {chat._id}
-                            <span
-                                className="close-button"
-                                onClick={(e) => handleDeleteClick(e, chat.conversationId)}
-                            >
-                                X
-                            </span>
+                            {chat.alias ? chat.alias : `${chat._id.slice(0, 15)}...`}
+                            <div className="button-container">
+                                <span
+                                    className="edit-button"
+                                    onClick={(e) => handleEditClick(e, chat.conversationId)}
+                                ></span>
+                                <span
+                                    className="close-button"
+                                    onClick={(e) => handleDeleteClick(e, chat.conversationId)}
+                                ></span>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -123,7 +156,7 @@ const Chat = () => {
                 </div>
             </aside>
             <section className="chatbox">
-                <div className="chat-log">
+                <div className="chat-log" ref={chatLogRef}>
                     {chatLog.map((message, index) => (
                         <ChatMessage key={index} message={message} />
                     ))}

@@ -1,4 +1,4 @@
-package com.example.server.dto.requests;
+package com.example.server.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateChatRequest {
+public class GptMessage {
 
-        private String conversationId;
-        private String alias;
+        private String role;
+        private String content;
 }

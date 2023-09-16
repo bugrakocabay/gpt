@@ -41,10 +41,14 @@
   border: 1px solid white;
   border-radius: 5px;
   text-align: left;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
 }
 
 .side-menu-button:hover {
   background-color: rgb(255, 255, 255, 0.1);
+  color: #61dafb;
 }
 
 .side-menu-button span {
@@ -87,6 +91,7 @@
   border: none;
   outline: none;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0, 25);
+  resize: vertical;
 }
 
 .App-header {
@@ -113,6 +118,9 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: background-color 0.3s;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
 }
 
 .chat-list-item:hover {
@@ -187,10 +195,65 @@
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
+  position: relative; 
+  width: 20px; 
+  height: 20px;
+}
+
+.close-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  width: 10px;
+  height: 10px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 47.971 47.971"><g><g><path d="M28.228 23.986L47.092 5.122a2.998 2.998 0 00-4.242-4.242L23.986 19.744 4.121.88a2.998 2.998 0 00-4.242 4.242l18.865 18.864L-.121 42.85a2.998 2.998 0 104.242 4.242l18.865-18.864L42.85 47.091a2.998 2.998 0 104.242-4.242L28.228 23.986z" fill="%23ffffff"/></g></g></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .close-button:hover {
   background-color: #834f4f;
+}
+
+.edit-button {
+  color: #fff;
+  background-color: #5b5c60;
+  padding: 4px 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.edit-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  width: 10px;
+  height: 10px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M384 224h-96v-96c0-17.7-14.3-32-32-32s-32 14.3-32 32v96h-96c-17.7 0-32 14.3-32 32s14.3 32 32 32h96v96c0 17.7 14.3 32 32 32s32-14.3 32-32v-96h96c17.7 0 32-14.3 32-32s-14.3-32-32-32z"/></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.edit-button:hover {
+  background-color: #4f5b83;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-grow: 1;
 }
 
 .user-info {
