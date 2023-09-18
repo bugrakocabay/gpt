@@ -1,11 +1,10 @@
 package com.example.server.controllers;
 
-import com.example.server.dto.responses.LoginResponse;
-import com.example.server.dto.requests.LoginRequest;
-import com.example.server.dto.responses.RegisterResponse;
+import com.example.server.dto.responses.UserResponse;
 import com.example.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
@@ -16,13 +15,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> saveUser(@RequestBody LoginRequest user) throws Exception {
-        return new ResponseEntity<>(userService.saveUser(user), null, 201);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest user) throws Exception {
-        return new ResponseEntity<>(userService.login(user), null, 200);
+    @GetMapping("/{id}")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<UserResponse> getUser(@PathVariable String id) throws Exception {
+        return new ResponseEntity<>(userService.getUserById(id), null, 200);
     }
 }

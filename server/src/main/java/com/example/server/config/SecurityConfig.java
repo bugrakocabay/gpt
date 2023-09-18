@@ -41,8 +41,8 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/user/**").permitAll()
-                        .requestMatchers("/chat/**").authenticated()
+                        .requestMatchers("/auth/login", "/auth/register").permitAll()
+                        .requestMatchers("/chat/**", "/user/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .authenticationProvider(authenticationProvider)
