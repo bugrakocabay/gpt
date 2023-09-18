@@ -12,13 +12,16 @@ const Chat = () => {
     const [chatId, setChatId] = useState<string | null>(null);
     const [chatList, setChatList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [newAlias, setNewAlias] = useState("");
     const chatLogRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         fetchChatList(userInfo.id)
             .then((responseChatList) => {
+                if (responseChatList?.message?.includes("JWT expired")) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userInfo");
+                    window.location.reload();
+                }                
                 setChatList(responseChatList);
             })
             .catch((error) => {
