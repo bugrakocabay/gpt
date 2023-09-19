@@ -6,7 +6,6 @@ import com.example.server.dto.responses.ChatResponse;
 import com.example.server.services.ChatService;
 import com.example.server.dto.requests.SendChatMessageRequest;
 import com.example.server.models.Chat;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

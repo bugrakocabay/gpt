@@ -1,8 +1,7 @@
 package com.example.server.controllers;
 
-import com.example.server.dto.responses.LoginResponse;
-import com.example.server.dto.requests.LoginRequest;
-import com.example.server.dto.responses.RegisterResponse;
+import com.example.server.dto.requests.UpdateUserRequest;
+import com.example.server.dto.responses.UserResponse;
 import com.example.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +15,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> saveUser(@RequestBody LoginRequest user) throws Exception {
-        return new ResponseEntity<>(userService.saveUser(user), null, 201);
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getUser(@PathVariable String id) throws Exception {
+        return new ResponseEntity<>(userService.getUserById(id), null, 200);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest user) throws Exception {
-        return new ResponseEntity<>(userService.login(user), null, 200);
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> setApiKey(
+            @PathVariable String id,
+            @RequestBody UpdateUserRequest request) throws Exception {
+        return new ResponseEntity<>(userService.updateUser(id, request), null, 200);
     }
 }

@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +33,6 @@ public class ChatService {
     @Autowired
     private ChatRepository chatRepository;
     private final Environment environment;
-    private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Logger logger = Logger.getLogger(ChatService.class.getName());
 
     public ChatService(Environment environment) {
