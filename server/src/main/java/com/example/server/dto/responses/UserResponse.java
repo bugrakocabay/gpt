@@ -15,4 +15,5 @@ public class UserResponse {
         private String username;
         private String role;
         private String apiKey;
+        private String orgId;
 }

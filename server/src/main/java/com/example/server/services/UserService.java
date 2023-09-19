@@ -1,5 +1,6 @@
 package com.example.server.services;
 
+import com.example.server.dto.requests.UpdateUserRequest;
 import com.example.server.dto.responses.UserResponse;
 import com.example.server.models.User;
 import com.example.server.repositories.UserRepository;
@@ -32,6 +33,27 @@ public class UserService {
                 .username(user.getUsername())
                 .role(user.getRole().toString())
                 .apiKey(user.getApiKey())
+                .orgId(user.getOrgId())
+                .build();
+    }
+
+    @Transactional
+    @PreAuthorize("#id == authentication.principal.id")
+    public UserResponse updateUser(String id, UpdateUserRequest request) {
+        logger.info("Setting api key for user with id: " + id);
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return null;
+        }
+        user.setApiKey(request.getApiKey());
+        user.setOrgId(request.getOrgId());
+        userRepository.save(user);
+        return UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .role(user.getRole().toString())
+                .apiKey(user.getApiKey())
+                .orgId(user.getOrgId())
                 .build();
     }
 }

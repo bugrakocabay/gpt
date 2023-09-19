@@ -31,6 +31,7 @@ public class User implements UserDetails {
     private Role role;
     private String[] chats;
     private String apiKey;
+    private String orgId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
