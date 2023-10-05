@@ -14,6 +14,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +38,7 @@ public class AuthService {
     private Validator validator;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final RabbitTemplate rabbitTemplate;
     private final JwtService jwtService;
     private final Logger logger = Logger.getLogger(ChatService.class.getName());
 
@@ -59,6 +61,7 @@ public class AuthService {
                     .role(Role.USER)
                     .build();
             User savedUser = userRepository.save(newUser);
+            rabbitTemplate.convertAndSend("message-queue", user.getUsername());
             return new RegisterResponse(true, savedUser.getId(), savedUser.getUsername(), Role.USER);
         } catch (Exception e) {
             logger.warning("Error saving user: " + e);
